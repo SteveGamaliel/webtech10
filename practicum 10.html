@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finance Bridge DOM Practicum</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 24px;
+      background: #f4f7fb;
+      color: #243b53;
+      font-family: Arial, sans-serif;
+    }
+
+    main {
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .interaction-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      padding: 16px;
+      background: white;
+      border: 1px solid #d9e2ec;
+      border-radius: 8px;
+    }
+
+    button {
+      padding: 10px 14px;
+      border: 0;
+      border-radius: 5px;
+      background: #087e8b;
+      color: white;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .menu[hidden],
+    .modal[hidden] {
+      display: none;
+    }
+
+    .menu {
+      padding: 12px 28px;
+      background: #f4f7fb;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 4px;
+    }
+
+    input {
+      width: 100%;
+      padding: 9px;
+      border: 1px solid #9fb3c8;
+      border-radius: 4px;
+      font: inherit;
+    }
+
+    .message {
+      color: #087e8b;
+      font-weight: bold;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgb(0 0 0 / 55%);
+    }
+
+    .modal-content {
+      width: min(420px, 100%);
+      padding: 24px;
+      background: white;
+      border-radius: 8px;
+    }
+
+    .close-button {
+      float: right;
+    }
+
+    @media (max-width: 700px) {
+      .interaction-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Finance Bridge: DOM Interactions</h1>
+    <p>Try the dropdown, submit the form, and open the information modal.</p>
+
+    <div class="interaction-grid">
+      <section class="card">
+        <h2>Dropdown Menu</h2>
+        <button id="menuButton" aria-expanded="false" aria-controls="menu">
+          Choose an option
+        </button>
+        <ul class="menu" id="menu" hidden>
+          <li><a href="#gallery">View financial gallery</a></li>
+          <li><a href="#resources">Explore resources</a></li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Interactive Form</h2>
+        <form id="financeForm">
+          <label for="name">Name</label>
+          <input id="name" name="name" required>
+
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required>
+
+          <button type="submit">Send request</button>
+          <p class="message" id="formMessage" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Information Modal</h2>
+        <p>Open a modal with information about Finance Bridge.</p>
+        <button id="openModal">Open modal</button>
+      </section>
+    </div>
+
+    <div class="modal" id="modal" role="dialog"
+         aria-modal="true" aria-labelledby="modalTitle" hidden>
+      <div class="modal-content">
+        <button class="close-button" id="closeModal" aria-label="Close modal">
+          &times;
+        </button>
+        <h2 id="modalTitle">Finance Bridge</h2>
+        <p>Explore our financial planning and investment resources.</p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const menuButton = document.getElementById("menuButton");
+    const menu = document.getElementById("menu");
+
+    menuButton.addEventListener("click", () => {
+      const isOpen = menuButton.getAttribute("aria-expanded") === "true";
+      menuButton.setAttribute("aria-expanded", String(!isOpen));
+      menu.hidden = isOpen;
+    });
+
+    const financeForm = document.getElementById("financeForm");
+    const formMessage = document.getElementById("formMessage");
+
+    financeForm.addEventListener("submit", event => {
+      event.preventDefault();
+
+      if (!financeForm.reportValidity()) return;
+
+      const name = document.getElementById("name").value.trim();
+      formMessage.textContent = "Thank you, " + name + ". Your request is ready.";
+      financeForm.reset();
+    });
+
+    const modal = document.getElementById("modal");
+    const openModal = document.getElementById("openModal");
+    const closeModal = document.getElementById("closeModal");
+
+    openModal.addEventListener("click", () => {
+      modal.hidden = false;
+      closeModal.focus();
+    });
+
+    closeModal.addEventListener("click", () => {
+      modal.hidden = true;
+      openModal.focus();
+    });
+
+    modal.addEventListener("click", event => {
+      if (event.target === modal) modal.hidden = true;
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") modal.hidden = true;
+    });
+  </script>
+</body>
+</html>
